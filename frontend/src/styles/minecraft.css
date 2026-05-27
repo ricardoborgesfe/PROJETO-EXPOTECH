@@ -1,0 +1,17 @@
+.minecraft-slot {
+
+  width: 64px;
+  height: 64px;
+
+  background: #8b8b8b;
+
+  border-top: 4px solid #ffffff55;
+  border-left: 4px solid #ffffff55;
+
+  border-right: 4px solid #373737;
+  border-bottom: 4px solid #373737;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
