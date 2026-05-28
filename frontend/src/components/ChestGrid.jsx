@@ -1,3 +1,6 @@
+import chestBg from '../assets/chest-bg.png'
+import slotTexture from '../assets/minecraft-slot.png'
+
 function ChestGrid({ selectedProducts }) {
 
   const slots = Array(27).fill(null)
@@ -12,15 +15,31 @@ function ChestGrid({ selectedProducts }) {
 
   return (
 
-    <div className="
-      bg-[#c6c6c6]
-      p-4
-      border-4
-      border-[#555]
-      shadow-2xl
-    ">
+    <div
+      className="
+        p-6
+        rounded-lg
+        shadow-2xl
+        bg-cover
+        bg-center
+        border-4 border-[#4b4b4b]
+      "
+      style={{
+        backgroundImage: `url(${chestBg})`
+      }}
+    >
 
-      <div className="grid grid-cols-9 gap-1">
+      <h2 className="
+        text-white
+        text-2xl
+        font-bold
+        mb-4
+        drop-shadow-lg
+      ">
+        Inventário
+      </h2>
+
+      <div className="grid grid-cols-9 gap-2">
 
         {slots.map((slot, index) => (
 
@@ -28,19 +47,16 @@ function ChestGrid({ selectedProducts }) {
             key={index}
             className="
               w-16 h-16
-              bg-[#8b8b8b]
-              border-t-4 border-l-4
-              border-b-4 border-r-4
-              border-t-[#cfcfcf]
-              border-l-[#cfcfcf]
-              border-b-[#373737]
-              border-r-[#373737]
-              shadow-inner
+              bg-cover
+              bg-center
               flex items-center justify-center
-              hover:brightness-110
+              hover:scale-105
               transition-all
-              overflow-hidden
+              duration-200
             "
+            style={{
+              backgroundImage: `url(${slotTexture})`
+            }}
           >
 
             {slot ? (
@@ -48,7 +64,11 @@ function ChestGrid({ selectedProducts }) {
               <img
                 src={slot.image}
                 alt={slot.title}
-                className="w-12 h-12 object-contain"
+                className="
+                  w-12 h-12
+                  object-contain
+                  drop-shadow-lg
+                "
               />
 
             ) : null}

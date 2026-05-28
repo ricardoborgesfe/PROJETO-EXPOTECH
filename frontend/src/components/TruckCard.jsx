@@ -1,3 +1,5 @@
+import truckImage from '../assets/truck.png'
+
 function TruckCard({
   truck,
   usedCapacity,
@@ -10,50 +12,94 @@ function TruckCard({
       bg-[#2d2d2d]
       p-6
       rounded-xl
-      border border-gray-700
-      shadow-lg
+      border-4 border-[#4b4b4b]
+      shadow-2xl
       space-y-4
     ">
 
-      <h2 className="text-2xl font-bold text-green-400">
+      <h2 className="
+        text-3xl
+        font-bold
+        text-green-400
+        text-center
+      ">
         🚚 {truck.name}
       </h2>
 
-      <div>
+      <img
+        src={truckImage}
+        alt="Truck"
+        className="
+          w-40
+          mx-auto
+          drop-shadow-xl
+        "
+      />
 
-        <p>Capacidade Máxima</p>
+      <div className="space-y-2 text-lg">
 
-        <p className="font-bold">
-          {truck.capacity}kg
+        <p>
+          Capacidade Máxima:
+          <span className="font-bold ml-2">
+            {truck.capacity}kg
+          </span>
+        </p>
+
+        <p>
+          Carga Atual:
+          <span className="font-bold ml-2">
+            {usedCapacity}kg
+          </span>
+        </p>
+
+        <p>
+          Status:
+          <span className="
+            text-yellow-400
+            font-bold
+            ml-2
+          ">
+            {truck.status}
+          </span>
         </p>
 
       </div>
 
       <div>
 
-        <p>Carga Atual</p>
-
-        <p className="font-bold">
-          {usedCapacity}kg
+        <p className="mb-2 text-lg">
+          Eficiência
         </p>
 
-      </div>
+        <div className="
+          w-full
+          bg-gray-700
+          rounded-full
+          h-6
+        ">
 
-      <div>
+          <div
+            className="
+              bg-green-400
+              h-6
+              rounded-full
+              transition-all
+              duration-500
+            "
+            style={{
+              width: `${efficiency}%`
+            }}
+          ></div>
 
-        <p>Status</p>
+        </div>
 
-        <p className="text-yellow-400 font-bold">
-          {truck.status}
-        </p>
-
-      </div>
-
-      <div>
-
-        <p>Eficiência</p>
-
-        <p className="text-green-400 text-3xl font-bold">
+        <p className="
+          text-green-400
+          text-3xl
+          font-bold
+          mt-2
+          text-center
+        ">
           {efficiency}%
         </p>
 

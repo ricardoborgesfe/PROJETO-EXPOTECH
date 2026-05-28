@@ -5,6 +5,7 @@ import ChestGrid from '../components/ChestGrid'
 import ProductList from '../components/ProductList'
 import StatsPanel from '../components/StatsPanel'
 import TruckCard from '../components/TruckCard'
+import LoadingSpinner from '../components/LoadingSpinner'
 
 import api from '../services/api'
 
@@ -20,32 +21,42 @@ function Dashboard() {
 
   const [usedCapacity, setUsedCapacity] = useState(0)
 
-  async function optimizeLoad() {
+  const [loading, setLoading] = useState(false)
 
-    try {
+async function optimizeLoad() {
 
-      const response = await api.post('/optimize', {
-        products,
-        capacity: 100
-      })
+  try {
 
-      setOptimizedProducts(
-        response.data.selected_products
-      )
+    setLoading(true)
 
-      setEfficiency(
-        response.data.efficiency
-      )
+    const response = await api.post('/optimize', {
+      products,
+      capacity: 100
+    })
 
-      setUsedCapacity(
-        response.data.used_capacity
-      )
+    setOptimizedProducts(
+      response.data.selected_products
+    )
 
-    } catch (error) {
+    setEfficiency(
+      response.data.efficiency
+    )
 
-      console.error(error)
-    }
+    setUsedCapacity(
+      response.data.used_capacity
+    )
+
+  } catch (error) {
+
+    console.error(error)
+
+    alert('Erro ao otimizar carga')
+
+  } finally {
+
+    setLoading(false)
   }
+}
 
   return (
 
@@ -73,19 +84,27 @@ function Dashboard() {
             selectedProducts={optimizedProducts}
           />
 
-          <button
-            onClick={optimizeLoad}
-            className="
-              bg-green-500
-              hover:bg-green-600
-              px-6 py-3
-              rounded-xl
-              font-bold
-              transition-all
-            "
-          >
-            OTIMIZAR CARGA
-          </button>
+          {loading ? (
+
+            <LoadingSpinner />
+
+          ) : (
+
+            <button
+              onClick={optimizeLoad}
+              className="
+                bg-green-500
+                hover:bg-green-600
+                px-6 py-3
+                rounded-xl
+                font-bold
+                transition-all
+              "
+            >
+              OTIMIZAR CARGA
+            </button>
+
+          )}
 
         </div>
 
