@@ -1,32 +1,37 @@
+import { useEffect, useState } from 'react'
+
 import ProductCard from './ProductCard'
 
-const products = [
-  {
-    id: 1,
-    name: 'Notebook',
-    weight: 5,
-    priority: 10,
-    image: 'https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg'
-  },
-  {
-    id: 2,
-    name: 'Monitor',
-    weight: 7,
-    priority: 8,
-    image: 'https://fakestoreapi.com/img/71li-ujtlUL._AC_UX679_.jpg'
-  }
-]
+import { getProducts } from '../services/fakeStore'
 
-function ProductList() {
+function ProductList({ setProducts }) {
+
+  const [products, setLocalProducts] = useState([])
+
+  useEffect(() => {
+
+    async function loadProducts() {
+
+      const data = await getProducts()
+
+      setLocalProducts(data)
+
+      setProducts(data)
+    }
+
+    loadProducts()
+
+  }, [])
 
   return (
+
     <div>
 
       <h2 className="text-2xl font-bold mb-4">
         Produtos
       </h2>
 
-      <div className="space-y-4">
+      <div className="space-y-4 overflow-y-auto h-[700px] pr-2">
 
         {products.map((product) => (
 

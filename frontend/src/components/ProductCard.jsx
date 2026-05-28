@@ -12,7 +12,7 @@ function ProductCard({ product }) {
 
       <img
         src={product.image}
-        alt={product.name}
+        alt={product.title}
         className="
           w-16 h-16
           bg-white
@@ -25,7 +25,7 @@ function ProductCard({ product }) {
       <div>
 
         <h3 className="font-bold">
-          {product.name}
+          {product.title}
         </h3>
 
         <p>

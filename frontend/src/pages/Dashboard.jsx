@@ -1,11 +1,54 @@
+import { useState } from 'react'
+
 import Navbar from '../components/Navbar'
 import ChestGrid from '../components/ChestGrid'
 import ProductList from '../components/ProductList'
 import StatsPanel from '../components/StatsPanel'
+import TruckCard from '../components/TruckCard'
+
+import api from '../services/api'
+
+import trucks from '../data/mockTrucks'
 
 function Dashboard() {
 
+  const [products, setProducts] = useState([])
+
+  const [optimizedProducts, setOptimizedProducts] = useState([])
+
+  const [efficiency, setEfficiency] = useState(0)
+
+  const [usedCapacity, setUsedCapacity] = useState(0)
+
+  async function optimizeLoad() {
+
+    try {
+
+      const response = await api.post('/optimize', {
+        products,
+        capacity: 100
+      })
+
+      setOptimizedProducts(
+        response.data.selected_products
+      )
+
+      setEfficiency(
+        response.data.efficiency
+      )
+
+      setUsedCapacity(
+        response.data.used_capacity
+      )
+
+    } catch (error) {
+
+      console.error(error)
+    }
+  }
+
   return (
+
     <div className="min-h-screen bg-[#1e1e1e] text-white">
 
       <Navbar />
@@ -13,21 +56,53 @@ function Dashboard() {
       <div className="grid grid-cols-3 gap-6 p-6">
 
         <div>
-          <ProductList />
+
+          <ProductList
+            setProducts={setProducts}
+          />
+
         </div>
 
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center gap-4">
 
-          <h2 className="text-2xl font-bold mb-4">
+          <h2 className="text-2xl font-bold">
             Caminhão
           </h2>
 
-          <ChestGrid />
+          <ChestGrid
+            selectedProducts={optimizedProducts}
+          />
+
+          <button
+            onClick={optimizeLoad}
+            className="
+              bg-green-500
+              hover:bg-green-600
+              px-6 py-3
+              rounded-xl
+              font-bold
+              transition-all
+            "
+          >
+            OTIMIZAR CARGA
+          </button>
 
         </div>
 
-        <div>
-          <StatsPanel />
+        <div className="space-y-4">
+
+          <TruckCard
+            truck={trucks[0]}
+            usedCapacity={usedCapacity}
+            efficiency={efficiency}
+          />
+
+          <StatsPanel
+            efficiency={efficiency}
+            usedCapacity={usedCapacity}
+            selectedProducts={optimizedProducts}
+          />
+
         </div>
 
       </div>

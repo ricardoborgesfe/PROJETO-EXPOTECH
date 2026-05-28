@@ -1,6 +1,14 @@
-function StatsPanel() {
+import CapacityBar from './CapacityBar'
+import TruckStatus from './TruckStatus'
+
+function StatsPanel({
+  efficiency,
+  usedCapacity,
+  selectedProducts
+}) {
 
   return (
+
     <div className="
       bg-[#2d2d2d]
       p-6
@@ -14,39 +22,36 @@ function StatsPanel() {
         Status
       </h2>
 
-      <div>
+      <CapacityBar efficiency={efficiency} />
 
-        <p>Capacidade</p>
-
-        <div className="w-full bg-gray-700 rounded-full h-5 mt-2">
-
-          <div className="
-            bg-green-400
-            h-5
-            rounded-full
-            w-[80%]
-          "></div>
-
-        </div>
-
-      </div>
-
-      <div>
-
-        <p>Status do Caminhão</p>
-
-        <p className="text-yellow-400 font-bold">
-          EM TRANSPORTE
-        </p>
-
-      </div>
+      <TruckStatus />
 
       <div>
 
         <p>Eficiência</p>
 
         <p className="text-3xl text-green-400 font-bold">
-          87%
+          {efficiency}%
+        </p>
+
+      </div>
+
+      <div>
+
+        <p>Peso Utilizado</p>
+
+        <p className="text-xl font-bold">
+          {usedCapacity}kg
+        </p>
+
+      </div>
+
+      <div>
+
+        <p>Itens Selecionados</p>
+
+        <p className="text-xl font-bold">
+          {selectedProducts.length}
         </p>
 
       </div>
