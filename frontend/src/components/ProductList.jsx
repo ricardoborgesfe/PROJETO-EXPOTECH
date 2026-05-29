@@ -1,39 +1,32 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import ProductCard from './ProductCard'
-import { getProducts } from '../services/fakeStore'
 
-function ProductList({ setProducts, selectedProducts = [] }) {
-  const [products, setLocalProducts] = useState([])
-  const [loading, setLoading] = useState(true)
+function ProductList({ visibleItems, onCallNext, canCallNext, loading }) {
   const [search, setSearch] = useState('')
 
-  useEffect(() => {
-    async function loadProducts() {
-      const data = await getProducts()
-      setLocalProducts(data)
-      setProducts(data)
-      setLoading(false)
-    }
-    loadProducts()
-  }, [])
-
-  const filtered = products.filter(p =>
+  const filtered = visibleItems.filter(p =>
     p.title.toLowerCase().includes(search.toLowerCase())
   )
 
-  const selectedIds = new Set(selectedProducts.map(p => p.id))
+  // total units currently in inventory
+  const totalUnits = visibleItems.reduce((s, p) => s + p.qty, 0)
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
 
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-        <span style={{ fontFamily: 'var(--font-pixel)', fontSize: '0.45rem', color: '#e5e5e5', letterSpacing: '0.08em' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px', flexShrink: 0 }}>
+        <span style={{ fontFamily: 'var(--font-pixel)', fontSize: '0.42rem', color: '#e5e5e5', letterSpacing: '0.08em' }}>
           INVENTÁRIO
         </span>
-        <span style={{ fontFamily: 'var(--font-ui)', fontSize: '0.7rem', color: '#6b7280', fontWeight: 600 }}>
-          {products.length} itens
-        </span>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <span style={{ fontFamily: 'var(--font-ui)', fontSize: '0.65rem', color: '#6b7280', fontWeight: 600 }}>
+            {visibleItems.length} tipos
+          </span>
+          <span style={{ fontFamily: 'var(--font-ui)', fontSize: '0.65rem', color: '#9ca3af', fontWeight: 700 }}>
+            {totalUnits} un
+          </span>
+        </div>
       </div>
 
       {/* Search */}
@@ -45,22 +38,48 @@ function ProductList({ setProducts, selectedProducts = [] }) {
         style={{
           width: '100%', padding: '7px 10px', borderRadius: '5px',
           background: '#1a1a1a', border: '1px solid #3a3a3a',
-          color: '#e5e5e5', fontFamily: 'var(--font-ui)', fontSize: '0.78rem',
-          outline: 'none', marginBottom: '10px', boxSizing: 'border-box',
+          color: '#e5e5e5', fontFamily: 'var(--font-ui)', fontSize: '0.76rem',
+          outline: 'none', marginBottom: '8px', boxSizing: 'border-box', flexShrink: 0,
         }}
       />
 
       {/* List */}
-      <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '6px' }}
+      <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '5px', minHeight: 0 }}
         className="scrollbar-thin">
         {loading ? (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '120px', gap: '10px' }}>
-            <div style={{ width: '28px', height: '28px', border: '2px solid #4ade80', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-            <span style={{ fontFamily: 'var(--font-pixel)', fontSize: '0.38rem', color: '#6b7280' }}>CARREGANDO...</span>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100px', gap: '10px' }}>
+            <div style={{ width: '26px', height: '26px', border: '2px solid #4ade80', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+            <span style={{ fontFamily: 'var(--font-pixel)', fontSize: '0.36rem', color: '#6b7280' }}>CARREGANDO...</span>
           </div>
-        ) : filtered.map(product => (
-          <ProductCard key={product.id} product={product} isSelected={selectedIds.has(product.id)} />
-        ))}
+        ) : filtered.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '20px', color: '#6b7280', fontFamily: 'var(--font-ui)', fontSize: '0.75rem' }}>
+            Nenhum item encontrado
+          </div>
+        ) : (
+          filtered.map(product => (
+            <ProductCard key={product.id} product={product} />
+          ))
+        )}
+      </div>
+
+      {/* Call Next Batch button */}
+      <div style={{ flexShrink: 0, paddingTop: '10px' }}>
+        <button
+          onClick={onCallNext}
+          disabled={!canCallNext}
+          style={{
+            width: '100%', padding: '11px', borderRadius: '6px',
+            fontFamily: 'var(--font-pixel)', fontSize: '0.4rem', letterSpacing: '0.1em',
+            border: 'none',
+            cursor: canCallNext ? 'pointer' : 'not-allowed',
+            background: canCallNext ? 'linear-gradient(135deg, #1d4ed8, #60a5fa)' : '#1a1a1a',
+            color: canCallNext ? '#fff' : '#4b5563',
+            boxShadow: canCallNext ? '0 0 16px rgba(96,165,250,0.3)' : 'none',
+            transition: 'all 0.3s',
+          }}
+        >
+          {canCallNext ? '📦 CHAMAR PRÓXIMA LEVA' : '🔒 ENVIE O CAMINHÃO PRIMEIRO'}
+        </button>
       </div>
     </div>
   )

@@ -1,6 +1,10 @@
 import chestBg from '../assets/chest-bg.png'
 import slotTexture from '../assets/minecraft-slot.png'
 
+/**
+ * selectedProducts: array of product objects with `chosen_qty` field.
+ * Each product occupies ONE slot in the grid, showing its image + chosen_qty badge.
+ */
 function ChestGrid({ selectedProducts }) {
   const slots = Array(27).fill(null)
   selectedProducts.forEach((product, i) => { if (i < 27) slots[i] = product })
@@ -13,9 +17,14 @@ function ChestGrid({ selectedProducts }) {
         <span style={{ fontFamily: 'var(--font-pixel)', fontSize: '0.42rem', color: '#c4c4c4', letterSpacing: '0.1em' }}>
           BAÚ DO CAMINHÃO
         </span>
-        <span style={{ fontFamily: 'var(--font-ui)', fontSize: '0.7rem', color: '#6b7280', fontWeight: 600 }}>
-          {selectedProducts.length}/27 slots
-        </span>
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <span style={{ fontFamily: 'var(--font-ui)', fontSize: '0.68rem', color: '#6b7280', fontWeight: 600 }}>
+            {selectedProducts.length} tipos · {selectedProducts.reduce((s, p) => s + (p.chosen_qty || 1), 0)} unidades
+          </span>
+          <span style={{ fontFamily: 'var(--font-ui)', fontSize: '0.68rem', color: '#6b7280', fontWeight: 600 }}>
+            {selectedProducts.reduce((s, p) => s + (p.chosen_qty || 1) * p.weight, 0)}kg total
+          </span>
+        </div>
       </div>
 
       {/* Grid */}
@@ -24,57 +33,45 @@ function ChestGrid({ selectedProducts }) {
           {slots.map((slot, index) => (
             <div
               key={index}
-              title={slot ? `${slot.title} | Prioridade: ${slot.priority} | Peso: ${slot.weight}kg` : ''}
+              title={slot ? `${slot.title}\n${slot.chosen_qty}x · ${slot.chosen_qty * slot.weight}kg · P${slot.priority}` : ''}
               style={{
                 aspectRatio: '1 / 1',
                 backgroundImage: `url(${slotTexture})`,
                 backgroundSize: '100% 100%',
                 imageRendering: 'pixelated',
                 position: 'relative',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
                 overflow: 'hidden',
                 cursor: slot ? 'pointer' : 'default',
                 transition: 'transform 0.15s ease',
-                boxSizing: 'border-box',
               }}
               onMouseEnter={e => { if (slot) e.currentTarget.style.transform = 'scale(1.12)' }}
               onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)' }}
             >
               {slot && (
                 <>
-                  {/* Imagem do item — contida dentro do slot com padding interno */}
                   <img
                     src={slot.image}
                     alt={slot.title}
                     className="animate-slot-pop"
-                    style={{
-                      position: 'absolute',
-                      inset: '12%',          /* padding visual dentro do slot */
-                      width: '76%',
-                      height: '76%',
-                      objectFit: 'contain',
-                      display: 'block',
-                    }}
+                    style={{ position: 'absolute', inset: '12%', width: '76%', height: '76%', objectFit: 'contain' }}
                   />
-
-                  {/* Badge de prioridade — canto inferior direito */}
+                  {/* Quantity badge — bottom right, white text on dark bg */}
                   <div style={{
-                    position: 'absolute',
-                    bottom: '2px',
-                    right: '2px',
-                    background: 'rgba(0,0,0,0.75)',
-                    borderRadius: '2px',
-                    padding: '1px 3px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '1px',
-                    lineHeight: 1,
-                    zIndex: 2,
+                    position: 'absolute', bottom: '2px', right: '2px',
+                    background: 'rgba(0,0,0,0.82)',
+                    borderRadius: '2px', padding: '1px 3px',
+                    lineHeight: 1, zIndex: 2,
+                    display: 'flex', alignItems: 'center',
                   }}>
-                    <span style={{ fontFamily: 'var(--font-pixel)', fontSize: '7px', color: '#fde68a', textShadow: '0 0 4px #f59e0b' }}>
-                      {slot.priority}
+                    <span style={{
+                      fontFamily: 'var(--font-pixel)',
+                      fontSize: slot.chosen_qty >= 10 ? '5px' : '7px',
+                      color: '#ffffff',
+                      textShadow: '0 0 4px rgba(255,255,255,0.4)',
+                      letterSpacing: 0,
+                    }}>
+                      {slot.chosen_qty}
                     </span>
                   </div>
                 </>
